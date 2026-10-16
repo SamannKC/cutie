@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>guess what? ♡</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --pink: #ff76a9;
+  --hot: #ed4d8a;
+  --ink: #6b3c51;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: grid;
+  place-items: center;
+  font-family: 'Nunito', sans-serif;
+  color: var(--ink);
+  background: linear-gradient(
+    135deg,
+    #000000 0%,
+    #141414 45%,
+    #292929 75%,
+    #080808 100%
+  );
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px 18px;
+  overflow: hidden;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: .45;
+  pointer-events: none;
+}
+
+
+.blob.two {
+  width: 300px;
+  height: 300px;
+  background: #202020;
+  bottom: -160px;
+  right: -100px;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 540px);
+  padding: clamp(28px, 6vw, 54px) 24px 38px;
+  text-align: center;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 34px;
+  background: rgba(20,20, 20,0.88);
+  box-shadow:
+    0 22px 70px rgba(222,101,149,.16),
+    inset 0 0 0 1px rgba(255,180,207,.22);
+  backdrop-filter: blur(12px);
+  animation: cardIn .8s ease both;
+}
+
+.tiny-label {
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .19em;
+  text-transform: uppercase;
+  color: #d66d96;
+}
+
+h1 {
+  font-size: clamp(2.4rem, 8vw, 4.1rem);
+  line-height: 1.04;
+  margin: 15px 0 10px;
+  font-weight: 900;
+  letter-spacing: -.055em;
+}
+
+.subtitle {
+  font-size: 1.05rem;
+  margin: 0 auto 20px;
+  color: #9c6c80;
+}
+
+.cat-wrap {
+  width: 190px;
+  height: 170px;
+  margin: 14px auto 20px;
+  position: relative;
+  animation: bob 3s ease-in-out infinite;
+}
+
+.cat {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.heart {
+  position: absolute;
+  font-size: 25px;
+  color: var(--pink);
+  animation: float 3s ease-in-out infinite;
+}
+
+.heart.a {
+  left: -25px;
+  top: 34px;
+}
+
+.heart.b {
+  right: -24px;
+  top: 62px;
+  animation-delay: .7s;
+}
+
+.heart.c {
+  right: 15px;
+  top: 0;
+  font-size: 17px;
+  animation-delay: 1.2s;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 15px 46px;
+  min-width: 170px;
+  color: white;
+  background: linear-gradient(135deg, #ff8bb6, #f45d98);
+  box-shadow: 0 7px 0 #e9a4bf, 0 13px 25px #f6a2c2a0;
+  font: 900 1.2rem 'Nunito', sans-serif;
+  cursor: pointer;
+  transition: transform .18s, box-shadow .18s;
+}
+
+button:hover {
+  transform: translateY(-3px) scale(1.03);
+}
+
+button:active {
+  transform: translateY(4px);
+}
+
+.hint {
+  margin-top: 25px;
+  font-size: .85rem;
+  color: #c28ca2;
+}
+
+.reveal {
+  display: none;
+}
+
+.reveal.show {
+  display: block;
+  animation: revealIn .9s cubic-bezier(.16, 1, .3, 1) both;
+}
+
+.landing.hide {
+  display: none;
+}
+
+.love-title {
+  color: var(--hot);
+  text-shadow: 0 4px 0 #ffd0e2;
+}
+
+.love-cat {
+  width: 220px;
+  height: 110px;
+  margin: 15px auto 10px;
+  animation: loveBob 2.2s ease-in-out infinite;
+}
+
+.love-cat svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.message {
+  font-size: 1.05rem;
+  color: #9c6c80;
+  margin: 0 auto 25px;
+  line-height: 1.7;
+}
+
+.again {
+  background: linear-gradient(135deg, #c4a0ff, #a982ed);
+  box-shadow: 0 7px 0 #b9a1df, 0 13px 25px #b9a1df77;
+}
+
+.sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 5;
+  animation: burst 1.5s ease-out forwards;
+}
+
+.floaty {
+  position: fixed;
+  bottom: -40px;
+  pointer-events: none;
+  z-index: 4;
+  animation: rise linear forwards;
+  opacity: .8;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes revealIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-9px) rotate(1deg); }
+}
+
+@keyframes loveBob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(-12px) rotate(8deg); }
+}
+
+@keyframes rise {
+  to {
+    transform: translateY(-115vh) rotate(35deg);
+    opacity: 0;
+  }
+}
+
+@keyframes burst {
+  0% {
+    transform: scale(.3);
+    opacity: 0;
+  }
+  15% { opacity: 1; }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(1.2) rotate(35deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .card {
+    border-radius: 27px;
+    padding: 30px 18px;
+  }
+
+  .cat-wrap {
+    width: 170px;
+    height: 155px;
+  }
+
+  .love-cat {
+    width: 195px;
+    height: 195px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="scene">
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+
+  <main class="card">
+
+    <!-- FIRST PAGE -->
+    <section class="landing" id="landing">
+
+      <h1>guess what?</h1>
+
+      <div class="cat-wrap">
+        <span class="heart a">♡</span>
+        <span class="heart b">♡</span>
+        <span class="heart c">♥</span>
+
+        <svg class="cat" viewBox="0 0 200 170"
+             role="img" aria-label="Cute cat">
+          <ellipse cx="100" cy="153" rx="63" ry="9"
+                   fill="#ffd6e6"/>
+
+          <path d="M42 70 L48 19 Q50 8 61 17 L88 42
+                   Q101 36 115 42 L142 17 Q153 8 155 21 L159 72"
+                fill="#c7b2b6" stroke="#69424c"
+                stroke-width="5" stroke-linejoin="round"/>
+
+          <path d="M56 43 L59 25 L79 44Z M128 44 L148 24 L149 46Z"
+                fill="#ffb2c9"/>
+
+          <path d="M39 76 Q39 48 68 46 Q100 35 132 47
+                   Q162 53 162 82 L157 121 Q150 148 101 148
+                   Q51 148 43 121Z"
+                fill="#fff6eb" stroke="#69424c" stroke-width="5"/>
+
+          <path d="M43 80 Q43 52 69 48 L88 44
+                   Q73 73 54 81Z"
+                fill="#c7b2b6"/>
+
+          <path d="M115 45 Q147 48 158 71 L157 84
+                   Q136 72 126 61Z"
+                fill="#c7b2b6"/>
+
+          <ellipse cx="75" cy="94" rx="7" ry="10" fill="#58343d"/>
+          <ellipse cx="126" cy="94" rx="7" ry="10" fill="#58343d"/>
+
+          <circle cx="77" cy="91" r="2.4" fill="white"/>
+          <circle cx="128" cy="91" r="2.4" fill="white"/>
+
+          <ellipse cx="100" cy="109" rx="10" ry="5"
+                   fill="#ffb6c8" opacity=".65"/>
+          <ellipse cx="139" cy="109" rx="10" ry="5"
+                   fill="#ffb6c8" opacity=".65"/>
+
+          <path d="M96 105 Q100 111 104 105 Q107 116 100 116
+                   Q93 116 96 105Z"
+                fill="#e87998"/>
+
+          <path d="M100 116 Q92 124 86 116 M100 116 Q108 124 114 116"
+                fill="none" stroke="#69424c" stroke-width="3"
+                stroke-linecap="round"/>
+
+          <path d="M45 107 L22 101 M46 116 L24 118
+                   M154 107 L177 101 M154 116 L176 119"
+                fill="none" stroke="#69424c" stroke-width="3"
+                stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <button id="whatBtn">what? ✿</button>
+
+    </section>
+
+    <!-- SURPRISE PAGE -->
+    <section class="reveal" id="reveal" aria-live="polite">
+
+      <h1 class="love-title">I love you!</h1>
+
+      <p class="message">
+        ALOT AND ALOT AND ALOT AND ALOT ✨
+      </p>
+
+      <div class="love-cat">
+        <svg viewBox="0 0 220 220" role="img"
+             aria-label="Happy cat hugging a heart">
+
+          <ellipse cx="111" cy="201" rx="69" ry="10"
+                   fill="#ffd2e4"/>
+
+          <!-- Tail -->
+          <path d="M150 169 Q194 176 195 146 Q195 131 182 141
+                   Q174 148 169 159"
+                fill="#bba8b2" stroke="#69424c"
+                stroke-width="5" stroke-linecap="round"/>
+
+          <!-- Ears -->
+          <path d="M55 76 L61 25 Q62 13 74 23 L100 48
+                   Q113 43 125 49 L152 25 Q164 15 166 29 L169 83"
+                fill="#c7b2b6" stroke="#69424c"
+                stroke-width="5" stroke-linejoin="round"/>
+
+          <path d="M68 46 L71 32 L91 51Z M139 51 L160 31 L161 52Z"
+                fill="#ffb2c9"/>
+
+          <!-- Face -->
+          <path d="M49 88 Q49 58 78 55 Q112 44 143 57
+                   Q174 63 174 94 L168 148 Q161 181 112 183
+                   Q62 182 54 149Z"
+                fill="#fff6eb" stroke="#69424c" stroke-width="5"/>
+
+          <path d="M53 91 Q55 64 80 58 L99 53
+                   Q85 77 65 88Z M128 57 Q157 60 170 84
+                   L168 96 Q148 82 137 71Z"
+                fill="#c7b2b6"/>
+
+          <!-- Happy closed eyes -->
+          <path d="M75 105 Q84 93 94 105 M130 105 Q140 93 149 105"
+                fill="none" stroke="#58343d" stroke-width="5"
+                stroke-linecap="round"/>
+
+          <ellipse cx="72" cy="119" rx="10" ry="6" fill="#ffb6c8"/>
+          <ellipse cx="151" cy="119" rx="10" ry="6" fill="#ffb6c8"/>
+
+          <!-- Mouth -->
+          <path d="M105 112 Q111 119 117 112 Q122 126 111 128
+                   Q100 126 105 112Z"
+                fill="#f47e9f"/>
+
+          <path d="M111 128 Q104 135 99 129 M111 128 Q118 135 123 129"
+                fill="none" stroke="#69424c" stroke-width="3"
+                stroke-linecap="round"/>
+
+          <!-- Big heart -->
+          <path d="M68 145 Q83 137 100 153 L113 163 L127 153
+                   Q143 138 158 146 Q169 155 154 166
+                   L119 188 Q112 192 104 186 L70 163
+                   Q58 154 68 145Z"
+                fill="#ff76a9" stroke="#69424c"
+                stroke-width="4" stroke-linejoin="round"/>
+
+          <path d="M78 148 Q84 143 90 149"
+                fill="none" stroke="#ffc5dc"
+                stroke-width="4" stroke-linecap="round"/>
+
+          <!-- Paws -->
+          <circle cx="59" cy="158" r="13"
+                  fill="#fff6eb" stroke="#69424c" stroke-width="4"/>
+          <circle cx="158" cy="158" r="13"
+                  fill="#fff6eb" stroke="#69424c" stroke-width="4"/>
+        </svg>
+      </div>
+
+      <p class="message">
+        Talking to you is the BEST part of my day and and and UGHHHH IM ALWAYS MISSING YOU and I HATE IT WHEN WE HAVE ARGUMENTS BUT ILL DO EVERYTHING I CAN TO FIX STUFF CUS I REALLY REALLY REALLY WANNA BE WITH YOU ♡
+      </p>
+
+      <button class="again" id="againBtn">GIVE HUGS ↻</button>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const landing = document.getElementById('landing');
+const reveal = document.getElementById('reveal');
+const whatBtn = document.getElementById('whatBtn');
+const againBtn = document.getElementById('againBtn');
+
+function floatHeart() {
+  const heart = document.createElement('span');
+
+  heart.className = 'floaty';
+  heart.textContent = ['♡', '♥', '✧', '💗', '✿'][
+    Math.floor(Math.random() * 5)
+  ];
+
+  heart.style.left = Math.random() * 100 + 'vw';
+  heart.style.fontSize = (16 + Math.random() * 24) + 'px';
+
+  heart.style.color = [
+    '#ff76a9', '#e7a2ff', '#ffc17b', '#f3a6c5'
+  ][Math.floor(Math.random() * 4)];
+
+  heart.style.animationDuration = (4 + Math.random() * 4) + 's';
+
+  document.body.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 8500);
+}
+
+function burst() {
+  const symbols = ['♡', '♥', '✧', '✦', '💖'];
+
+  for (let i = 0; i < 24; i++) {
+    const el = document.createElement('span');
+
+    el.className = 'sparkle';
+    el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+
+    el.style.left = (10 + Math.random() * 80) + 'vw';
+    el.style.top = (18 + Math.random() * 64) + 'vh';
+    el.style.fontSize = (16 + Math.random() * 23) + 'px';
+
+    el.style.color = [
+      '#ff76a9', '#e7a2ff', '#ffc17b'
+    ][Math.floor(Math.random() * 3)];
+
+    el.style.setProperty('--dx', (Math.random() * 180 - 90) + 'px');
+    el.style.setProperty('--dy', (Math.random() * -160 - 20) + 'px');
+
+    document.body.appendChild(el);
+
+    setTimeout(() => el.remove(), 1600);
+  }
+}
+
+whatBtn.addEventListener('click', () => {
+  landing.classList.add('hide');
+  reveal.classList.add('show');
+
+  burst();
+
+  for (let i = 0; i < 12; i++) {
+    setTimeout(floatHeart, i * 180);
+  }
+});
+
+againBtn.addEventListener('click', () => {
+  burst();
+
+  for (let i = 0; i < 10; i++) {
+    setTimeout(floatHeart, i * 130);
+  }
+
+  const cat = document.querySelector('.love-cat');
+
+  cat.animate(
+    [
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.12) rotate(-4deg)' },
+      { transform: 'scale(1)' }
+    ],
+    { duration: 500, easing: 'ease-out' }
+  );
+});
+
+setInterval(floatHeart, 1700);
+</script>
+
+</body>
+</html>
